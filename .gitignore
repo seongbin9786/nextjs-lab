@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# env (예시용 .env.development, .env.example 등은 커밋 허용)
+.env
+.env*.local
+# 17번 예시는 데모용 .env 파일을 의도적으로 커밋합니다.
+!examples/17-env-variables/.env
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.pem
+bench-results/
+
+# 10번 예시: hero.png는 hero.jpg 생성용 중간 산출물(약 10MB)이라 제외.
+# scripts/make-images.mjs 로 언제든 재생성됩니다.
+examples/10-image-optimization/public/images/hero.png
