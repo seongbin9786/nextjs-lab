@@ -6,7 +6,8 @@
 
 ```bash
 pnpm install
-pnpm dev   # http://localhost:3000
+pnpm dev              # http://localhost:3000
+bash scripts/bench.sh # 캐시 적중 vs 미캐시 TTFB 측정
 ```
 
 ## 이 예시가 보여주는 것
@@ -44,6 +45,19 @@ revalidateTag("now-data", "max");
 ### 요청 메모이제이션
 한 렌더 패스 안에서 같은 URL+옵션 fetch는 네트워크에 한 번만 나갑니다.
 `/dedupe`에서 페이지와 자식 컴포넌트가 같은 counter 값을 받는 것으로 확인.
+
+## 정량 측정: 캐시 적중의 응답 속도 (2026-08 실측)
+
+`/api/now`에 150ms의 왕복 지연(외부 API 흉내)을 넣고 `scripts/bench.sh`로 잰 값:
+
+| 페이지 | 시나리오 | TTFB |
+| --- | --- | --- |
+| `/fresh` | 매 요청 API 호출 | **167~228ms** |
+| `/cached` | `force-cache` 적중 | **7~10ms** |
+
+캐시 적중 시 API 왕복 자체가 사라져 **약 20~25배** 빨라집니다.
+데이터가 아무리 느려져도(외부 API 지연 증가) 캐시된 페이지는 영향을 받지
+않습니다.
 
 ## 정량 비교: `/isr` (풀 라우트 캐시)
 

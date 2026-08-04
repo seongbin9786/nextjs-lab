@@ -6,7 +6,9 @@
 
 ```bash
 pnpm install
-pnpm dev   # http://localhost:3000
+node scripts/gen-catalog.mjs   # 번들 비교용 40KB 데이터 생성
+pnpm dev                       # http://localhost:3000
+bash scripts/compare-bundles.sh  # 번들 크기 정량 비교
 ```
 
 ## 페이지 구성
@@ -18,6 +20,7 @@ pnpm dev   # http://localhost:3000
 | `/server-only` | `node:fs`로 서버 파일 읽기 — 클라이언트 번들에 없음 |
 | `/composition` | 서버 콘텐츠를 클라이언트 컴포넌트의 children으로 전달 |
 | `/boundary` | 경계를 넘어갈 수 있는 props / 없는 props |
+| `/compare` | 서버 합성 vs 전부-클라이언트 번들 크기 정량 비교 |
 
 ## 핵심 개념
 
@@ -49,10 +52,18 @@ const [count, setCount] = useState(0);
 
 ## 정량 비교: 번들 크기
 
-| 구성 | 클라이언트 번들 포함 내용 |
+`/compare`에서 같은 화면을 두 방식으로 만들어 첫 로딩 JS를 잰 결과
+(`scripts/compare-bundles.sh`, 2026-08 실측):
+
+| 구성 | 첫 로딩 JS |
 | --- | --- |
-| 페이지 전체를 `"use client"`로 | 페이지 로직 + 데이터 fetching 코드 + 모든 import |
-| 서버 페이지 + 잎사귀만 클라이언트 | **인터랙티브 컴포넌트만** — 서버 로직은 0바이트 |
+| 서버 페이지 + 클라이언트 잎사귀 (`/compare/server`) | **560.9 kB** |
+| 전부 클라이언트 (`/compare/client`) | **617.1 kB** |
+| 차이 | **56.2 kB** |
+
+전부-클라이언트 방식은 약 40KB 데이터 리터럴과 페이지 코드가 브라우저 JS에
+포함됩니다. 서버 합성 방식에서 데이터는 HTML/RSC 페이로드로 가서 JS 번들에서
+빠집니다. 데이터·페이지가 커질수록 격차는 그대로 벌어집니다.
 
 `/server-only` 페이지에서 `node:fs` 코드를 썼는데도 DevTools의 JS 어디에도
 그 코드가 없는 것을 확인할 수 있습니다 (번들 크기 0바이트의 증거).

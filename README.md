@@ -79,9 +79,13 @@ pnpm dev                            # http://localhost:3000
 | 측정 | 결과 | 재현 스크립트 |
 | --- | --- | --- |
 | 스트리밍 TTFB | 블로킹 2.01s → 스트리밍 0.007s | `examples/04-.../scripts/bench.sh` |
+| 데이터 캐시 TTFB | 미캐시 167~228ms → 캐시 적중 7~10ms | `examples/05-.../scripts/bench.sh` |
+| 서버 vs 클라이언트 번들 | 전부 클라이언트가 56.2kB 더 무거움 | `examples/03-.../scripts/compare-bundles.sh` |
 | 이미지 전송량 | 1747KB → AVIF 7KB (245배) | `examples/10-.../scripts/bench.sh` |
 | 지연 로딩 번들 | 첫 로딩 JS 705.6kB → 564.2kB | `examples/18-.../scripts/compare-bundles.sh` |
 | Turbopack 빌드 | 2.14s vs webpack 7.06s (3.3배) | `examples/22-.../scripts/bench.sh` |
+
+전체 벤치 일괄 실행: `./scripts/bench-all.sh`
 
 측정 환경: MacBook (darwin), Node 20.18.1, Next.js 16.3.0, 2026-08.
 

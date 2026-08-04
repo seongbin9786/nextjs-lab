@@ -58,6 +58,15 @@ export default function HomePage() {
             정해지는지 확인합니다.
           </p>
         </div>
+        <div className="card">
+          <h3>
+            <Link href="/compare">번들 크기 정량 비교</Link>
+          </h3>
+          <p>
+            같은 화면을 서버 합성과 전부-클라이언트로 만들었을 때 첫 로딩
+            JS 크기를 잽니다.
+          </p>
+        </div>
       </div>
     </div>
   );
