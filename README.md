@@ -19,6 +19,7 @@ pnpm dev                            # http://localhost:3000
 ```bash
 ./scripts/install-all.sh
 ./scripts/build-all.sh
+./scripts/smoke-test.sh   # 25개 예시를 실제 서버로 띄워 HTTP 응답 확인
 ```
 
 ## 예시 목록
