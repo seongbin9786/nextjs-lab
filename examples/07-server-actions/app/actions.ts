@@ -3,6 +3,7 @@
 // 이 파일 전체가 서버 액션입니다.
 // "use server"가 파일 맨 위에 있으면, 이 파일의 모든 export가
 // 각각 독립적인 서버 액션(HTTP POST 엔드포인트)이 됩니다.
+import { revalidatePath } from "next/cache";
 import { addTodo, addLike, wait } from "@/lib/db";
 
 export type TodoActionResult = {
@@ -30,6 +31,11 @@ export async function createTodo(
   await wait(800);
 
   addTodo(text);
+
+  // 재검증 API를 호출하지 않는 액션은 현재 라우트를 다시 렌더링하지
+  // 않습니다. 목록이 같은 응답에서 갱신되어 보이려면 revalidatePath로
+  // 경로를 무효화해야 합니다.
+  revalidatePath("/todos");
   return { ok: true, message: "추가했습니다." };
 }
 
