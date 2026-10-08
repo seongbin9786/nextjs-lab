@@ -7,8 +7,8 @@ export default function BenchmarkPage() {
       <p>
         각 페이지 HTML에서 <strong>실행되는</strong> <code>&lt;script
         src&gt;</code>의 합계(첫 로딩 JS)입니다.{" "}
-        <code>scripts/compare-bundles.sh</code>를 실행하면 측정 후 이
-        페이지에 숫자가 채워집니다.
+        아래 숫자는 <code>scripts/compare-bundles.sh</code>로 측정한
+        값입니다.
       </p>
       <table>
         <thead>
