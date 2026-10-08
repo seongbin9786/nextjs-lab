@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 // 고전 방식 비교 페이지: 구글 Fonts CDN에서 Noto Sans KR을 가져옵니다.
-// <link rel="stylesheet">는 React 19가 자동으로 <head>로 올려줍니다.
+// React 19는 precedence prop이 있는 <link rel="stylesheet">만 <head>로
+// 올립니다. 이 link에는 precedence가 없어 body 안 제자리에 렌더링됩니다.
 export default function CdnPage() {
   return (
     <div className="container">

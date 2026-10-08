@@ -41,5 +41,10 @@ export async function createTodo(
 
 export async function likePhoto(): Promise<number> {
   await wait(600);
-  return addLike();
+  const likes = addLike();
+  // createTodo와 같은 이유입니다. 재검증하지 않으면 /photos가 다시 렌더링되지
+  // 않아 LikeButton의 initial이 옛 값으로 남고, 트랜지션이 끝나는 순간
+  // useOptimistic 값이 +1 이전 숫자로 되돌아갑니다.
+  revalidatePath("/photos");
+  return likes;
 }

@@ -3,8 +3,6 @@ import Script from "next/script";
 import { ScriptLoadMonitor } from "@/components/script-load-monitor";
 
 export default function DemoPage() {
-  const pageShownAt = Date.now();
-
   return (
     <div className="container">
       <h1>전략 비교 데모</h1>
@@ -23,7 +21,7 @@ export default function DemoPage() {
       {/* 3) lazyOnload: 유휴 시간에 로드 */}
       <Script src="/demo-scripts/chat-widget.js" strategy="lazyOnload" />
 
-      <ScriptLoadMonitor pageShownAt={pageShownAt} />
+      <ScriptLoadMonitor />
 
       <h2>기대 결과</h2>
       <ul>

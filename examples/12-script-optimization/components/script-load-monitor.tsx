@@ -6,10 +6,15 @@ type Entry = { name: string; at: number };
 
 // window.__loadedScripts에 기록된 스크립트 로드 시각을
 // 페이지 표시 시각과 비교해서 보여줍니다.
-export function ScriptLoadMonitor({ pageShownAt }: { pageShownAt: number }) {
+// 기준 시각은 브라우저에서 이 컴포넌트가 hydration된 순간입니다. 서버 컴포넌트의
+// Date.now()를 넘기면 정적 생성 페이지에서는 빌드 시각이 되어 차이가 분·시간
+// 단위로 커집니다.
+export function ScriptLoadMonitor() {
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [pageShownAt, setPageShownAt] = useState<number | null>(null);
 
   useEffect(() => {
+    setPageShownAt(Date.now());
     const update = () => {
       const list = (window as unknown as { __loadedScripts?: Entry[] })
         .__loadedScripts;
@@ -23,7 +28,7 @@ export function ScriptLoadMonitor({ pageShownAt }: { pageShownAt: number }) {
   return (
     <div className="card">
       <h3 style={{ marginTop: 0 }}>스크립트 로드 시각</h3>
-      {entries.length === 0 ? (
+      {entries.length === 0 || pageShownAt === null ? (
         <p className="muted" style={{ margin: 0 }}>
           아직 로드된 스크립트가 없습니다…
         </p>

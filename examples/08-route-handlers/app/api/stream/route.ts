@@ -15,6 +15,9 @@ export async function GET() {
         const event = `data: {"tick":${tick},"time":"${new Date().toLocaleTimeString("ko-KR", { hour12: false })}"}\n\n`;
         controller.enqueue(encoder.encode(event));
         if (tick >= 10) {
+          // 정상 종료 때는 cancel()이 호출되지 않으므로 여기서 타이머를 직접
+          // 정리합니다. 남겨두면 닫힌 스트림에 enqueue하다 매초 에러가 납니다.
+          clearInterval(timer);
           controller.close();
         }
       }, 1000);

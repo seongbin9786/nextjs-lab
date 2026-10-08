@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { connection } from "next/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // connection()이 없으면 이 페이지는 빌드 때 정적으로 생성되어, 아래 시각이
+  // 빌드 시각으로 고정됩니다. 새로고침마다 서버에서 다시 계산되게 요청 시
+  // 렌더링으로 둡니다.
+  await connection();
   const renderedAt = new Date().toLocaleTimeString("ko-KR");
 
   return (

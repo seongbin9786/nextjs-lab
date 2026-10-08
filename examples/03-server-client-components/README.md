@@ -159,7 +159,8 @@ const [count, setCount] = useState(0);
 
 ```tsx
 // app/page.tsx
-export default function HomePage() {
+export default async function HomePage() {
+  await connection(); // 요청 시 렌더링 (없으면 빌드 시각으로 고정)
   const renderedAt = new Date().toLocaleTimeString("ko-KR");
   // ...
   // 이 문단의 렌더링 시각: {renderedAt}

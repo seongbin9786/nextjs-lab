@@ -14,7 +14,7 @@ pnpm dev   # 터미널 로그를 함께 보세요
 ```
 
 1. 서버 시작 시 터미널에 `[instrumentation] register() 실행됨` 출력
-2. `/crash?boom=1` 접속 → `[instrumentation] 요청 에러: GET /crash — ...` 출력
+2. `/crash?boom=1` 접속 → `[instrumentation] 요청 에러: GET /crash?boom=1 — ...` 출력
 
 프로덕션 모드(`pnpm build && pnpm start`)에서도 같은 로그가 찍힙니다.
 `register()`는 개발 서버든 프로덕션 서버든 서버 인스턴스가 시작될 때마다
@@ -91,7 +91,7 @@ Next.js 15에서 도입된 이 훅은 세 가지 인자를 받습니다.
 | 인자 | 내용 |
 | --- | --- |
 | `error` | 던져진 에러. 타입은 `unknown`이라 사용하기 전에 좁혀야 합니다 |
-| `request` | `{ path, method, headers }` — 요청 경로, 메서드, 헤더 |
+| `request` | `{ path, method, headers }` — 요청 경로, 메서드, 헤더. `headers`는 Web `Headers`가 아니라 일반 객체(`NodeJS.Dict<string \| string[]>`)입니다 |
 | `context` | 에러가 발생한 맥락 (아래 표) |
 
 `context`에 담기는 정보는 꽤 구체적입니다.
@@ -103,7 +103,6 @@ Next.js 15에서 도입된 이 훅은 세 가지 인자를 받습니다.
 | `routeType` | 에러 발생 지점: `'render'` \| `'route'` \| `'action'` \| `'proxy'` |
 | `renderSource` | `'react-server-components'` \| `'react-server-components-payload'` \| `'server-rendering'` |
 | `revalidateReason` | `'on-demand'` \| `'stale'` \| `undefined` (일반 요청) |
-| `renderType` | `'dynamic'` \| `'dynamic-resume'` (PPR) |
 
 여기서 중요한 함정이 하나 있습니다. **`error`가 원래 던져진 에러 인스턴스가
 아닐 수 있습니다.** 서버 컴포넌트 렌더링 도중 발생한 에러는 React가 한 번
@@ -223,22 +222,20 @@ export async function register() {
 
 ```ts
 // instrumentation.ts
-export function onRequestError(
-  err: Error & { digest?: string },
-  request: {
-    path: string;
-    method: string;
-    headers: Headers;
-  },
-) {
+export const onRequestError: Instrumentation.onRequestError = (
+  error,
+  request,
+) => {
+  const err = error as Error & { digest?: string };
   console.error(
     `[instrumentation] 요청 에러: ${request.method} ${request.path} — ${err.message} (digest: ${err.digest ?? "없음"})`,
   );
-}
+};
 ```
 
-실제 서명은 `error: unknown`이고 세 번째 인자 `context`도 받지만, 예시는
-설명을 위해 많이 쓰는 필드만 타입으로 적었습니다. 에러 리포팅 서비스로
+`next`가 제공하는 `Instrumentation.onRequestError` 타입을 쓰면 인자 타입이
+실제 서명과 어긋나지 않습니다. `error`는 `unknown`이라 좁혀서 쓰고, 세 번째
+인자 `context`는 이 예시에서 쓰지 않아 생략했습니다. 에러 리포팅 서비스로
 보낼 때는 `context.routeType`과 `context.routePath`까지 함께 보내면
 "어느 라우트의 어떤 종류의 처리에서 났는지"까지 분류할 수 있습니다.
 
