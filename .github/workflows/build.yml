@@ -1,0 +1,34 @@
+# 모든 예시가 프로덕션 빌드(타입 체크 포함)를 통과하는지 확인합니다.
+# 각 예시는 독립 앱이라 lockfile이 25개이므로, pnpm store를 lockfile 전체 해시로 캐시합니다.
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-all:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # README 요구 사항(Node.js 20.9+)의 하한 버전으로 검증합니다.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: examples/*/pnpm-lock.yaml
+
+      # CI 환경에서 pnpm install은 기본으로 --frozen-lockfile 입니다.
+      - run: ./scripts/install-all.sh
+      - run: ./scripts/build-all.sh
