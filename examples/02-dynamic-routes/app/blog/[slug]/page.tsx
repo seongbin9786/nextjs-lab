@@ -45,8 +45,8 @@ export default async function PostPage({
       <div className="note">
         <p style={{ margin: 0 }}>
           이 글은 <code>generateStaticParams</code>에 포함되어{" "}
-          <strong>빌드 시점에 HTML로 만들어졌습니다.</strong> 빌드 출력에서 ○
-          (Static) 표시를 확인해보세요.
+          <strong>빌드 시점에 HTML로 만들어졌습니다.</strong> 빌드 출력에서 ●
+          (SSG) 표시를 확인해보세요.
         </p>
       </div>
     </div>

@@ -140,7 +140,7 @@ Next.js 15에서 `params`, `searchParams`, `cookies()`, `headers()`가 Promise�
 바뀌었고, Next.js 16에서는 **동기 접근이 완전히 제거**되어 반드시 `await`해야
 합니다. 14 이하에서는 동기 prop이었습니다.
 
-이 변화는 기존 README에 적힌 대로 스트리밍과 캐싱을 개선하기 위한 것입니다. 셸을
+이 변화는 스트리밍과 캐싱을 개선하기 위한 것입니다. 셸을
 먼저 보내는 렌더링 모델(예: Cache Components)에서 params는 나중에 도착하는 런타임
 데이터가 될 수 있고, Promise여야 껍데기를 먼저 스트리밍한 뒤 값을 기다리는 구성이
 가능해집니다. 클라이언트 컴포넌트에서는 `await` 대신 React의 `use()` API나

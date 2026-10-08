@@ -16,7 +16,7 @@ pnpm dev                # Turbopack dev 체험
 pnpm build && pnpm start
 ```
 
-webpack dev와 직접 비교해 보고 싶다면 `pnpm dev -- --webpack`으로 두 번째 터미널에서 띄우면 됩니다(단, 같은 프로젝트의 dev 동시 실행은 16부터 락파일로 막혀 있으므로 첫 번째 dev는 먼저 내려야 합니다).
+webpack dev와 직접 비교해 보고 싶다면 `pnpm dev --webpack`으로 두 번째 터미널에서 띄우면 됩니다(단, 같은 프로젝트의 dev 동시 실행은 16부터 락파일로 막혀 있으므로 첫 번째 dev는 먼저 내려야 합니다).
 
 ## 이 예시가 보여주는 것
 
@@ -35,7 +35,7 @@ webpack dev와 직접 비교해 보고 싶다면 `pnpm dev -- --webpack`으로 �
 2. `/nested` 페이지로 이동합니다. 터미널에 이 요청의 Compile/Render 시간이 찍힙니다.
 3. `app/nested/page.tsx`의 아무 문자열이나 고쳐 저장합니다. 터미널에 변경 반영 시간이 표시되고, 브라우저는 새로고침 없이 갱신됩니다.
 4. `Ctrl+C`로 dev를 내리고 `pnpm build`를 실행합니다. 터미널에 단계별 소요 시간이 찍힙니다.
-5. 같은 빌드를 `pnpm build -- --webpack`으로 다시 실행해 시간 차이를 눈으로 비교합니다.
+5. 같은 빌드를 `pnpm build --webpack`으로 다시 실행해 시간 차이를 눈으로 비교합니다.
 6. 격차를 정량으로 확인하려면 `bash scripts/bench.sh`를 실행합니다.
 
 ## 동작 원리
@@ -93,8 +93,10 @@ Next.js 16.0에서 beta로 도입되었고, 16.1부터 dev에서, 16.3부터 빌
 
 주의할 점도 있습니다. 빌드 캐시는 `.next/cache`가 다음 빌드까지 살아 있어야 의미가 있습니다. 매번 깨끗한 환경에서 시작하는 컨테이너 빌드나 CI에서 `.next/cache`를 보존하지 않는다면 캐시는 쓰기만 하고 읽히지 않습니다. 그런 환경에서는 `turbopackFileSystemCacheForBuild: false`로 캐시 작성 자체를 건너뛰는 것이 공식 문서의 권장 사항입니다.
 
-> 참고: `scripts/bench.sh`는 매 측정 전에 `.next`를 통째로 지우므로, 이
-> 예시의 측정값은 파일 시스템 캐시가 없는 **콜드 상태** 기준입니다.
+> 참고: `scripts/bench.sh`는 dev 측정 전에만 `.next`를 통째로 지웁니다. 그래서
+> dev 수치는 파일 시스템 캐시가 없는 **콜드 상태** 기준입니다. 빌드는 `.next`를
+> 지우지 않고 3회 연속 실행하므로 2회차부터 `.next/cache`를 읽는 웜 빌드이고,
+> 3회 중 최솟값을 채택합니다.
 
 ### 설정 없이 지원하는 것들
 
@@ -165,16 +167,16 @@ next build --webpack     # 기존 webpack 커스텀 설정이 있을 때
 
 ### `scripts/bench.sh` — 측정 방식 그대로 읽기
 
-빌드는 3회 실행 중 가장 빠른 값을 채택하고, dev는 서버 프로세스를 띄운 뒤 첫 HTTP 응답이 올 때까지의 시간을 잽니다. 매 회차마다 `.next`를 지워 콜드 상태를 맞춥니다.
+빌드는 3회 실행 중 가장 빠른 값을 채택하고, dev는 서버 프로세스를 띄운 뒤 첫 HTTP 응답이 올 때까지의 시간을 잽니다. dev는 매 회차마다 `.next`를 지워 콜드 상태를 맞춥니다.
 
 ```bash
 # scripts/bench.sh (발췌) — dev 서버 첫 응답 측정
 rm -rf .next 2>/dev/null || true
-"$@" >/dev/null 2>&1 &
+"$@" -p "$PORT" >/dev/null 2>&1 &
 local pid=$!
 start=$(date +%s.%N)
 for _ in $(seq 1 120); do
-  if curl -s -o /dev/null http://localhost:3000 2>/dev/null; then break; fi
+  if curl -s -o /dev/null "http://localhost:$PORT" 2>/dev/null; then break; fi
   sleep 0.2
 done
 end=$(date +%s.%N)
@@ -191,11 +193,11 @@ end=$(date +%s.%N)
 elapsed=$(awk -v a="$start" -v b="$end" 'BEGIN { printf "%.2f", b - a }')
 ```
 
-`next build`와 `next build --webpack`을 이 함수로 각각 3회씩 돌려 가장 빠른 값을 채택하고, dev 측정 전에는 `pkill`로 잔존 서버 프로세스를 정리해 조건을 맞춥니다. 마지막에 네 숫자와 배율을 요약표로 출력합니다.
+`next build`와 `next build --webpack`을 이 함수로 각각 3회씩 돌려 가장 빠른 값을 채택하고, dev 측정은 전용 포트(`PORT=3122`)에서 하고, 측정 전후에 그 포트를 쓰는 프로세스만 정리해 조건을 맞춥니다. 포트가 이미 사용 중이면 측정하지 않고 종료합니다. 다른 dev 서버(예: 3000번)를 실수로 재거나 죽이지 않기 위해서입니다. 마지막에 네 숫자와 배율을 요약표로 출력합니다.
 
 ### `app/nested/page.tsx` — Fast Refresh 체감용 타깃
 
-카드 20개를 그리는 단순한 페이지입니다. `pnpm dev`를 띄우고 이 파일의 아무 문자열이나 고쳐 저장하면, 변경이 반영되는 시간이 터미널 로그에 표시됩니다. 같은 파일을 `pnpm dev -- --webpack`으로 띄웠을 때와 비교하면 수정 반영 속도의 차이를 체감할 수 있습니다.
+카드 20개를 그리는 단순한 페이지입니다. `pnpm dev`를 띄우고 이 파일의 아무 문자열이나 고쳐 저장하면, 변경이 반영되는 시간이 터미널 로그에 표시됩니다. 같은 파일을 `pnpm dev --webpack`으로 띄웠을 때와 비교하면 수정 반영 속도의 차이를 체감할 수 있습니다.
 
 ### `app/page.tsx` — 문서에 나온 숫자를 화면으로
 
@@ -228,7 +230,7 @@ elapsed=$(awk -v a="$start" -v b="$end" 'BEGIN { printf "%.2f", b - a }')
 
 - 앱이 클수록 격차가 벌어집니다
 - 측정 환경(CPU, 디스크, 캐시 상태)에 따라 절대값은 달라질 수 있습니다
-- `scripts/bench.sh`는 매번 `.next`를 지우고 dev를 재시작해 측정합니다
+- `scripts/bench.sh`는 dev 측정 때마다 `.next`를 지우고 dev를 재시작해 측정합니다. 빌드 측정은 `.next`를 지우지 않습니다
 - 위 dev 수치는 "서버 프로세스 시작 → 첫 HTTP 응답 성공"까지의 시간이며, 여기에는 요청된 페이지의 컴파일이 포함됩니다
 
 ### `bench.sh`가 출력하는 요약

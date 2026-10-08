@@ -20,9 +20,9 @@ run "10 이미지 전송량" "examples/10-image-optimization" "scripts/bench.sh"
 run "18 지연 로딩 번들" "examples/18-dynamic-imports" "scripts/compare-bundles.sh"
 run "22 Turbopack vs webpack" "examples/22-turbopack-dx" "scripts/bench.sh"
 
-# 벤치 후 남은 서버 정리
-pkill -f "next start" >/dev/null 2>&1 || true
-pkill -f "next-server" >/dev/null 2>&1 || true
+# 서버 정리는 각 벤치 스크립트가 자기 포트(3104/3110/3118/3122/3125/3126)
+# 기준으로 직접 합니다. 여기서 프로세스 이름으로 pkill 하면 사용자가 따로
+# 띄운 무관한 Next.js 서버까지 죽으므로 하지 않습니다.
 
 echo ""
 echo "모든 벤치 완료."

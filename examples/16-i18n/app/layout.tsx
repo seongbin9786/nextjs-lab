@@ -17,7 +17,9 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale?: string }>;
 }>) {
-  // [locale] 세그먼트가 있을 때만 locale이 params로 넘어옵니다.
+  // 주의: 레이아웃은 자기 세그먼트까지의 params만 받습니다. 루트 레이아웃은
+  // [locale]보다 위에 있으므로 locale은 항상 undefined이고, lang은 언제나
+  // "ko"가 됩니다. 이 한계를 보여주기 위한 코드입니다. (README 동작 원리 4)
   const { locale } = await params;
 
   return (

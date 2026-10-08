@@ -40,7 +40,7 @@ const nextConfig: NextConfig = { cacheComponents: true };
 | 기본 동작 | fetch 캐시는 옵션 지정 시에만, 정적/동적 판단은 암묵적 | **모든 것이 요청 시 실행** |
 | 캐싱 | fetch 옵션·세그먼트 설정으로 암묵적 | `"use cache"` 지시어로 명시적 |
 | 정적 셸 | 라우트 전체가 정적이거나 동적이거나 | **PPR 기본**: 셸은 정적, 구멍만 동적 |
-| 세그먼트 설정 | `dynamic`/`revalidate`/`fetchCache` | **사용 불가** (v16에서 제거됨) |
+| 세그먼트 설정 | `dynamic`/`revalidate`/`fetchCache` | **사용 불가** (`cacheComponents`와 함께 쓸 수 없음) |
 
 Cache Components는 빌드 시 **모든 라우트의 정적 셸(static shell) 생성을
 검증**합니다. 셸을 못 만드는 코드가 있으면 dev에서 인사이트/오류로

@@ -33,7 +33,11 @@ export default function GalleryPage() {
         <p style={{ margin: 0 }}>
           이 모달은 <strong>인터셉팅 라우트</strong>가 만든 것입니다. 같은
           주소를 주소창에 직접 입력하거나 새로고침하면 모달 대신{" "}
-          <Link href="/photo/1">전체 사진 페이지</Link>가 열립니다.
+          {/* Link는 소프트 내비게이션이라 인터셉팅 라우트가 가로채 모달이
+              뜹니다. 전체 페이지를 보여주려면 일반 a 태그로 하드
+              내비게이션을 일으킵니다. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/photo/1">전체 사진 페이지</a>가 열립니다.
         </p>
       </div>
     </div>

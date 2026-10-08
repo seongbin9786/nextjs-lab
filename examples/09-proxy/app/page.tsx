@@ -50,8 +50,9 @@ export default function HomePage() {
 
       <div className="note">
         <p style={{ margin: 0 }}>
-          DevTools → Network에서 아무 응답이나 골라 Response Headers를
-          보세요. <code>x-request-id</code>,{" "}
+          DevTools → Network에서 페이지 문서 응답을 골라 Response Headers를
+          보세요. (<code>_next/static</code> 등 matcher에서 제외한 경로와
+          리다이렉트·리라이트 응답에는 붙지 않습니다.) <code>x-request-id</code>,{" "}
           <code>x-powered-by-proxy</code> 헤더가 proxy가 붙인 것입니다.
         </p>
       </div>

@@ -11,7 +11,7 @@ pnpm dev   # http://localhost:3000
 
 홈(`/`)에서 각 개념으로 가는 링크를 제공합니다. 직접 확인해볼 지점은 이렇습니다.
 
-- `/dashboard` ↔ `/dashboard/settings` — 사이드바 DOM과 입력값이 유지되는지
+- `/dashboard` ↔ `/dashboard/settings` — 사이드바 DOM은 유지되고 settings 페이지의 입력값은 사라지는지
 - `/layout-vs-template` — 레이아웃(초록 테두리)과 템플릿(주황 점선) 중 누가 살아남는지
 - `/about`, `/blog` — `(marketing)` 라우트 그룹이 URL에서 생략되는지
 - `/no-such-page` — `app/not-found.tsx` 폴백 화면
@@ -296,13 +296,18 @@ export default function DashboardLayout({
 ```tsx
 // components/mount-stamp.tsx
 export function MountStamp({ label }: { label: string }) {
-  const [mountedAt] = useState(() => new Date().toLocaleTimeString("ko-KR"));
+  const [mountedAt, setMountedAt] = useState<string | null>(null);
   const [count, setCount] = useState(0);
+  useEffect(() => {
+    setMountedAt(new Date().toLocaleTimeString("ko-KR"));
+  }, []);
   // 새로 마운트되면 마운트 시각과 클릭 횟수가 초기화됩니다.
 ```
 
-- `useState` 초기화는 마운트 시점에 한 번만 실행됩니다. 그래서 마운트 시각과 클릭
-  횟수가 "측정 도구" 역할을 합니다. 값이 초기화되었다는 것은 컴포넌트가 재마운트되었다는
+- 빈 의존성 배열의 `useEffect`와 `useState` 초기값은 마운트 시점에 한 번만 적용됩니다.
+  그래서 마운트 시각과 클릭 횟수가 "측정 도구" 역할을 합니다. 시각을 `useState`
+  초기화 함수에서 만들지 않는 이유는 hydration 불일치 때문입니다. 서버 HTML에는 빌드
+  시각이 들어가고 클라이언트는 현재 시각을 계산하므로 두 텍스트가 달라집니다. 값이 초기화되었다는 것은 컴포넌트가 재마운트되었다는
   직접 증거입니다.
 - `layout.tsx`는 초록 실선 테두리, `template.tsx`는 주황 점선 테두리를 그려 시각적으로
   구분했습니다. 같은 폴더에 둘이 함께 있으면 템플릿이 레이아웃 안쪽에 자리 잡습니다.

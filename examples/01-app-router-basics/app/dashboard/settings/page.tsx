@@ -15,7 +15,7 @@ export default function SettingsPage() {
       <p className="muted">
         페이지(page)는 이동할 때마다 새로 렌더링됩니다. 반면 레이아웃은
         유지되죠. 입력값이 유지되는 컴포넌트를 만들고 싶다면 상태를 레이아웃
-        쪽으로 올리거나, 19예시의 Activity를 참고하세요.
+        쪽으로 올리거나, React 19.2의 Activity를 검토하세요.
       </p>
     </>
   );

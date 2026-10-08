@@ -86,7 +86,7 @@ module.exports = {
 ```
 
 이 플래그를 켜고 개발 서버를 실행하면 Next.js가 Partytown 패키지
-(`@qwik.dev/partytown`) 설치 방법을 안내합니다. Partytown은 워커 안에서도 DOM
+(`@builder.io/partytown`) 설치 방법을 안내합니다. Partytown은 워커 안에서도 DOM
 API에 접근할 수 있게 프록시하는 방식이라, 모든 서드파티 스크립트가 완벽히
 동작하긴 어렵습니다. 도입 전 Partytown의 trade-offs 문서를 확인하세요.
 
@@ -163,7 +163,7 @@ window.__loadedScripts.push({ name: "page-start.js (beforeInteractive)", at: Dat
 {/* lazyOnload: 유휴 시간에 로드 */}
 <Script src="/demo-scripts/chat-widget.js" strategy="lazyOnload" />
 
-<ScriptLoadMonitor pageShownAt={pageShownAt} />
+<ScriptLoadMonitor />
 ```
 
 `tracker.js`와 `chat-widget.js`는 실행되면 자기 이름과 시각을
@@ -173,7 +173,9 @@ window.__loadedScripts.push({ name: "page-start.js (beforeInteractive)", at: Dat
 ### components/script-load-monitor.tsx — 시각 표
 
 `window.__loadedScripts`를 300ms 간격으로 읽어, 각 스크립트의 실행 시각에서
-`pageShownAt`(페이지가 그려진 시각)을 뺀 차이를 ms로 표시합니다. 음수가 나오면
+`pageShownAt`(브라우저에서 이 컴포넌트가 hydration된 시각)을 뺀 차이를 ms로
+표시합니다. 기준 시각을 서버 컴포넌트의 `Date.now()`로 잡지 않는 이유는 `/demo`가
+정적 생성 페이지라 그 값이 빌드 시각이 되기 때문입니다. 음수가 나오면
 "페이지 JS보다 먼저 실행됨"으로 표시합니다. `beforeInteractive` 스크립트가
 음수가 되는 것이 기대 동작입니다.
 

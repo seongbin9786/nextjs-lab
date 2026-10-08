@@ -5,19 +5,34 @@ cd "$(dirname "$0")/.."
 
 PORT=3104
 
+if lsof -ti tcp:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "포트 $PORT 를 이미 다른 프로세스가 사용 중입니다. 종료 후 다시 실행하세요." >&2
+  exit 1
+fi
+
 echo "==> 빌드"
 pnpm build >/dev/null 2>&1
 
 echo "==> 서버 시작 (포트 $PORT)"
 pnpm start -p "$PORT" >/dev/null 2>&1 &
 SERVER_PID=$!
-trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+cleanup() {
+  kill "$SERVER_PID" 2>/dev/null || true
+  # pnpm이 자식 next 서버에 신호를 전달하지 못한 경우에 대비해 포트 기준으로도 정리합니다.
+  lsof -ti tcp:"$PORT" -sTCP:LISTEN 2>/dev/null | xargs kill 2>/dev/null || true
+}
+trap cleanup EXIT
 
 # 서버 준비 대기
+ready=""
 for _ in $(seq 1 30); do
-  if curl -s -o /dev/null "http://localhost:$PORT"; then break; fi
+  if curl -s -o /dev/null "http://localhost:$PORT"; then ready=1; break; fi
   sleep 0.5
 done
+if [ -z "$ready" ]; then
+  echo "서버가 15초 안에 응답하지 않았습니다." >&2
+  exit 1
+fi
 
 echo ""
 echo "== /blocking : 데이터를 다 모은 뒤 한 번에 응답 =="

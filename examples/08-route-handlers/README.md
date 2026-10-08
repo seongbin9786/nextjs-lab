@@ -124,7 +124,10 @@ export async function GET() {
         tick += 1;
         const event = `data: {"tick":${tick},"time":"..."}\n\n`;
         controller.enqueue(encoder.encode(event));
-        if (tick >= 10) controller.close();
+        if (tick >= 10) {
+          clearInterval(timer);
+          controller.close();
+        }
       }, 1000);
     },
   });
@@ -256,9 +259,10 @@ const valid =
 ### `app/api/stream/route.ts` — 스트림 생명주기
 
 `start(controller)`에서 `setInterval`로 1초마다
-`data: {...}\n\n`를 `enqueue`하고, 10번째에 `controller.close()`로
-스트림을 닫습니다. `cancel()`에서는 타이머를 정리하는데, 클라이언트가
-스트림 도중에 연결을 끊으면 이쪽이 호출됩니다. 타이머를 정리하지 않으면
+`data: {...}\n\n`를 `enqueue`하고, 10번째에 타이머를 정리한 뒤
+`controller.close()`로 스트림을 닫습니다. `cancel()`에서도 타이머를 정리하는데,
+클라이언트가 스트림 도중에 연결을 끊으면 이쪽이 호출됩니다. 정상 종료 때는
+`cancel()`이 호출되지 않으므로 두 곳 모두에서 정리해야 합니다. 타이머를 정리하지 않으면
 아무도 안 받는 이벤트를 계속 만들게 됩니다.
 
 ### `app/api/cors/route.ts` — 프리플라이트와 실제 응답

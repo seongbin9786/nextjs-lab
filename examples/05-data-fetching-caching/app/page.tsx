@@ -45,7 +45,7 @@ export default function HomePage() {
           <tr>
             <td>라우터 캐시</td>
             <td>클라이언트가 내비게이션 결과를 메모리에 유지</td>
-            <td>19예시에서 Link와 함께 다룸</td>
+            <td>이 저장소의 예시에서는 따로 다루지 않음</td>
           </tr>
         </tbody>
       </table>

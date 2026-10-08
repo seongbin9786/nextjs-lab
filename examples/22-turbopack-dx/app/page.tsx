@@ -70,11 +70,11 @@ export default function HomePage() {
       <pre>
         <code>{`# 프로덕션 빌드 비교
 pnpm build                # Turbopack (기본)
-pnpm build -- --webpack   # webpack
+pnpm build --webpack      # webpack
 
 # dev 서버
 pnpm dev                  # Turbopack
-pnpm dev -- --webpack     # webpack`}</code>
+pnpm dev --webpack        # webpack`}</code>
       </pre>
 
       <h2>함께 온 DX 개선들</h2>
@@ -97,13 +97,13 @@ pnpm dev -- --webpack     # webpack`}</code>
           빌드해도 서로 충돌하지 않습니다.
         </li>
         <li>
-          <strong>파일 시스템 캐시 (beta)</strong>:{" "}
-          <code>experimental.turbopackFileSystemCacheForDev</code>를 켜면
-          재시작 컴파일이 더 빨라집니다.
+          <strong>파일 시스템 캐시</strong>:{" "}
+          <code>experimental.turbopackFileSystemCacheForDev</code>가 16.1부터
+          기본으로 켜져 있어 재시작 컴파일이 더 빨라집니다.
         </li>
       </ul>
       <p>
-        <Link href="/nested/page">느린 컴포넌트 예시</Link> 페이지에서 수정
+        <Link href="/nested">느린 컴포넌트 예시</Link> 페이지에서 수정
         후 Fast Refresh 속도도 체감해볼 수 있습니다.
       </p>
     </div>

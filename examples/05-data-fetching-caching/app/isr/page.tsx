@@ -32,8 +32,9 @@ export default function IsrPage() {
           받고, 그 사이 새 HTML이 생성됩니다.
         </li>
         <li>
-          홈에서 <code>POST /api/revalidate</code>를 호출하면(revalidatePath)
-          즉시 재생성됩니다.
+          <code>/cached</code>의 버튼이나 <code>curl -X POST</code>로{" "}
+          <code>/api/revalidate</code>를 호출하면(revalidatePath) 10초를
+          기다리지 않고 다음 방문 때 재생성됩니다.
         </li>
       </ol>
       <div className="note">

@@ -12,10 +12,12 @@ export function proxy(request: NextRequest) {
   requestHeaders.set("x-request-id", requestId);
 
   // 2) 단순 리다이렉트: /legacy → 홈
+  //    (응답 헤더에는 요청 ID만 붙입니다. requestHeaders를 그대로 넘기면
+  //     cookie 등 요청 헤더 전체가 응답 헤더로 되돌아갑니다.)
   if (pathname === "/legacy") {
-    return NextResponse.redirect(new URL("/", request.url), {
-      headers: requestHeaders,
-    });
+    const response = NextResponse.redirect(new URL("/", request.url));
+    response.headers.set("x-request-id", requestId);
+    return response;
   }
 
   // 3) 인증 게이트: /admin 아래는 auth 쿠키가 있어야 진입 가능.

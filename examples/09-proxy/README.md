@@ -17,7 +17,7 @@ pnpm dev   # http://localhost:3000
 | `/admin` | 쿠키 없으면 `/login?from=/admin`으로 리다이렉트 |
 | `/old-blog/hello` | `/blog/hello`로 리라이트 (URL 유지) |
 | `/legacy` | 홈으로 리다이렉트 |
-| 모든 응답 | `x-powered-by-proxy` 헤더 추가 (DevTools에서 확인) |
+| proxy를 통과한 일반 응답 | `x-powered-by-proxy` 헤더 추가 (DevTools에서 확인. 정적 에셋, 리다이렉트, 리라이트 응답 제외) |
 
 ## 동작 원리
 

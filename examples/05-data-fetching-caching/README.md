@@ -91,7 +91,7 @@ bash scripts/bench.sh # 캐시 적중 vs 미캐시 TTFB 측정 (빌드 + prod �
 | ④ 라우터 캐시 | 내비게이션으로 받은 RSC 페이로드 | 브라우저 메모리 | stale 시간 경과, router.refresh() |
 
 이 예시는 ①②③을 다룹니다. ④는 클라이언트 내비게이션과 얽혀 있어
-19예시(Link, View Transitions)에서 함께 다룹니다.
+이 저장소의 예시에서는 따로 다루지 않습니다.
 
 ### 대전제: 기본은 "캐시 없음" (Next.js 15+의 대변화)
 
@@ -147,8 +147,13 @@ no-store**(정확히는 "auto no cache")로 바뀌었고, 캐싱은 명시적으
                                     + revalidatePath("/isr")
          ◀───────── 200 ─────────
 router.refresh() → 서버가 /cached를 다시 렌더링
-  └ 태그가 무효화됐으니 fetch는 MISS → /api/now 재호출 → counter 증가
+  └ 태그는 stale 표시만 됨 → 옛 counter로 먼저 응답 + 백그라운드로 /api/now 재호출
+다음 새로고침 → 갱신된 캐시 적중 → counter 증가
 ```
+
+그래서 버튼을 누른 직후에는 counter가 그대로이고, 한 번 더 새로고침해야
+증가합니다. `next start`로 띄운 서버에서 직접 확인한 순서입니다
+(`/cached` 1 → 1 → POST `/api/revalidate` → 1 → 2).
 
 Next.js 16부터 `revalidateTag`는 두 번째 인자로 `cacheLife` 프로필을
 필수로 받습니다. `"max"`는 stale-while-revalidate 방식 — 캐시를

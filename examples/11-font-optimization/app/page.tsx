@@ -7,7 +7,7 @@ export default function HomePage() {
         폰트 최적화 (next/font)
       </h1>
       <p>
-        이 페이지 전체가 <code>next/font</code>로 로드한{" "}
+        이 페이지의 제목이 <code>next/font</code>로 로드한{" "}
         <strong>IBM Plex Sans KR</strong>로 렌더링됩니다. 외부 폰트 서버
         요청이 <strong>0개</strong>입니다.
       </p>

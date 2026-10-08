@@ -19,7 +19,7 @@ pnpm dev   # http://localhost:3000
 | 파일 | 보여주는 것 |
 | --- | --- |
 | `app/layout.tsx` | `localFont()` 호출과 CSS 변수(`variable`) 적용 |
-| `public/fonts/ibm-plex-sans-kr-400.woff2` | 자체 호스팅하는 폰트 파일 (약 4.5KB) |
+| `public/fonts/ibm-plex-sans-kr-400.woff2` | 자체 호스팅하는 폰트 파일 (약 6.4KB) |
 | `app/page.tsx` | `var(--font-plex)`로 폰트 적용 |
 | `app/how/page.tsx` | 빌드 시 일어나는 일과 요청 수 비교 표 |
 | `app/cdn/page.tsx` | `<link>` 기반 구글 Fonts 고전 방식 비교군 |
@@ -278,7 +278,9 @@ const noto = Noto_Sans_KR({ subsets: ["latin"], weight: ["400", "700"] });
 4. **"preload는 항상 모든 페이지에서 된다"** — preload는 폰트를 호출한 파일의
    범위(페이지/레이아웃/루트 레이아웃)를 따릅니다. 특정 페이지에서만 호출한
    폰트는 다른 라우트에서 preload되지 않습니다.
-5. **이 예시의 폰트 파일은 일부 글리프만 담은 작은 파일(약 4.5KB)입니다.**
+5. **이 예시의 폰트 파일은 일부 글리프만 담은 작은 파일(약 6.4KB)입니다.**
+   홈 제목("폰트 최적화 (next/font)")에 쓰인 글자만 담은 서브셋이라, 다른 글자는
+   fallback 폰트로 그려집니다.
    실제 한글 폰트는 weight당 MB 단위이므로, 전체 글리프를 다루는 서비스에서는
    서브셋·weight 선택이 용량에 훨씬 큰 영향을 줍니다.
 
