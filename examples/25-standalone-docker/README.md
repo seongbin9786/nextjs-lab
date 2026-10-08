@@ -163,12 +163,15 @@ export default nextConfig;
 FROM node:20-alpine AS deps
 WORKDIR /app
 RUN corepack enable pnpm || npm i -g pnpm
-COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile || pnpm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 ```
 
 lockfile만 먼저 복사해서 설치하는 것이 포인트입니다. 소스를 바꾸지 않는 한
 이 레이어는 캐시됩니다. `--frozen-lockfile`은 lockfile과 다른 설치를 막습니다.
+lockfile이 `package.json`과 맞지 않으면 이미지 빌드가 실패합니다. 일반 install로
+넘어가는 fallback을 두지 않는 이유는, 그 경우 lockfile과 다른 버전이 조용히
+설치되기 때문입니다.
 
 ### `Dockerfile` — 2단계 builder
 
@@ -198,9 +201,9 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 EXPOSE 3000
@@ -210,7 +213,9 @@ CMD ["node", "server.js"]
 세 개의 `COPY --from=builder`가 이 예시의 전부입니다. standalone 출력,
 그리고 수동 복사가 필요한 `static`과 `public`. 소스 코드도, `node_modules`
 전체도 복사하지 않습니다. 비루트 사용자(`nextjs`)로 실행해 컨테이너가
-뚫렸을 때의 피해 반경도 줄입니다.
+뚫렸을 때의 피해 반경도 줄입니다. 복사할 때 `--chown=nextjs:nodejs`로 소유자를
+바꾸는 이유는, 런타임에 `.next/cache`(ISR, 이미지 최적화 캐시)에 써야 하기
+때문입니다. root 소유로 두면 이 쓰기가 `EACCES`로 실패합니다.
 
 ### `app/server-time/page.tsx` — 서버가 살아 있는 증거
 
