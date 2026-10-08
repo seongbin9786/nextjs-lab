@@ -33,8 +33,10 @@ export default function ServerEnvPage() {
       </p>
       <div className="note">
         <p style={{ margin: 0 }}>
-          확인 방법: DevTools → Sources → 번들 파일에서{" "}
-          <code>base-password</code>를 검색해보세요. 없습니다. 반대로
+          확인 방법: DevTools → Sources → 번들 파일에서 위에 표시된
+          DB_PASSWORD 값(<code>pnpm dev</code>에서는{" "}
+          <code>dev-password</code>, 프로덕션 빌드에서는{" "}
+          <code>base-password</code>)을 검색해보세요. 없습니다. 반대로
           NEXT_PUBLIC_ 값은 <Link href="/client">다음 페이지</Link>에서
           볼 수 있습니다.
         </p>

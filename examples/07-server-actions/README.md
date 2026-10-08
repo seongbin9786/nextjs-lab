@@ -182,7 +182,7 @@ refetch 요청" 두 단계가 아닙니다.
 구현입니다.
 
 ```ts
-// app/actions.ts (전체 22줄 중 핵심)
+// app/actions.ts (발췌)
 export async function createTodo(
   _prev: TodoActionResult,
   formData: FormData,
@@ -218,7 +218,7 @@ export async function createTodo(
 ### `components/todo-form.tsx` — `useActionState` + `useFormStatus`
 
 ```tsx
-const [state, formAction, isPending] = useActionState(createTodo, initial);
+const [state, formAction] = useActionState(createTodo, initial);
 // useFormStatus는 폼 '안의' 자식 컴포넌트에서 호출해야 함
 <form action={formAction}>...</form>
 ```
@@ -247,7 +247,7 @@ function SubmitButton() {
 ### `components/like-button.tsx` — `useOptimistic`
 
 ```tsx
-const [optimistic, addOptimistic] = useOptimistic(likes, (s, d) => s + d);
+const [optimistic, addOptimistic] = useOptimistic(initial, (s, d) => s + d);
 startTransition(async () => {
   addOptimistic(1);      // 즉시 +1 표시
   await likePhoto();     // 서버 액션 (느려도 체감 지연 없음)
@@ -308,7 +308,7 @@ export default function TodosPage() {
 | 작성 파일 | `route.ts` + 클라이언트 fetch 코드 | 함수 1개 |
 | 폼 직렬화 | 수동 (`JSON.stringify`/파싱) | FormData 자동 |
 | JS 비활성 환경 | 제출 불가 | **네이티브 폼 제출로 동작** |
-| 제출 후 갱신 | 수동 refetch | **자동 re-render** |
+| 제출 후 갱신 | 수동 refetch | **re-render** (`revalidatePath` 등 재검증 호출 시) |
 | 왕복 (Next 16) | 요청 → 응답 → refetch 요청 | **단일 왕복** (액션 + 갱신이 한 응답) |
 
 `/todos`에서 800ms 지연을 넣었지만 "추가하는 중…" 상태와 결과 표시가

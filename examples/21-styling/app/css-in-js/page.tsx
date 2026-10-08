@@ -34,7 +34,7 @@ export default function CssInJsPage() {
         <tbody>
           <tr>
             <td>런타임</td>
-            <td>styled-components</td>
+            <td>styled-components, styled-jsx</td>
             <td>
               SSR 시 스타일을 수집하는 별도 설정 필요. 클라이언트 컴포넌트에서
               사용
@@ -42,7 +42,7 @@ export default function CssInJsPage() {
           </tr>
           <tr>
             <td>빌드 시 (제로 런타임)</td>
-            <td>vanilla-extract, styled-jsx(CSS Modules 결합)</td>
+            <td>vanilla-extract</td>
             <td>빌드 때 CSS를 추출해 JS 비용이 없음. RSC 친화적</td>
           </tr>
           <tr>

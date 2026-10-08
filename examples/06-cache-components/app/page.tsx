@@ -20,7 +20,7 @@ export default function HomePage() {
           <tr>
             <td>기본 동작</td>
             <td>
-              fetch는 기본적으로 캐시 시도, 정적/동적 판단이 암묵적
+              fetch 캐시는 옵션 지정 시에만, 정적/동적 판단이 암묵적
             </td>
             <td>
               <strong>모든 것이 요청 시 실행</strong>. 캐싱은 명시적 선택

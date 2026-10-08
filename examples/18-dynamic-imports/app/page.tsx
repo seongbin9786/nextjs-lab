@@ -34,7 +34,7 @@ export default function HomePage() {
           <h3>
             <Link href="/benchmark">정량 비교</Link>
           </h3>
-          <p>빌드 출력의 First Load JS 숫자로 차이를 확인합니다.</p>
+          <p>페이지 HTML이 참조하는 첫 로딩 JS 합계로 차이를 확인합니다.</p>
         </div>
       </div>
 

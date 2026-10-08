@@ -27,8 +27,10 @@ export default async function CachedPage() {
       <ol>
         <li>새로고침을 여러 번 해보세요. counter가 그대로입니다.</li>
         <li>
-          아래 버튼으로 캐시를 무효화한 뒤 새로고침하면 counter가
-          증가합니다.
+          아래 버튼으로 캐시를 무효화하면, 바로 다음 렌더는 아직 옛
+          counter를 보여주고 백그라운드에서 새 값을 받아 둡니다. 한 번 더
+          새로고침하면 counter가 증가합니다. (<code>"max"</code>의
+          stale-while-revalidate 동작)
         </li>
       </ol>
       <RevalidateButton />

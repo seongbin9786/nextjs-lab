@@ -144,7 +144,9 @@ API를 통해 그 값을 받아오도록 직접 만들어야 합니다.
 때문입니다. 덕분에 비밀 값이 실수로 노출되는 것을 막습니다.
 
 `/server` 페이지에서 안내한 대로 DevTools → Sources에서 번들 파일을 열고
-`base-password`를 검색해 보세요. 없습니다. 반대로 `NEXT_PUBLIC_API_URL`의
+화면에 표시된 `DB_PASSWORD` 값을 검색해 보세요(`pnpm dev`에서는
+`.env.development`의 `dev-password`, 프로덕션 빌드에서는 `.env`의 `base-password`).
+없습니다. 반대로 `NEXT_PUBLIC_API_URL`의
 값(`https://api.example.com`)은 번들 안에서 그대로 발견됩니다.
 
 ### 런타임 변수가 필요한 이유 (컨테이너 주입)

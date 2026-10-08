@@ -67,7 +67,7 @@ export default function HomePage() {
           <tr>
             <td>제출 후 새로고침</td>
             <td>직접 처리</td>
-            <td>자동 re-render</td>
+            <td>재검증(revalidatePath 등) 호출 시 re-render</td>
           </tr>
         </tbody>
       </table>

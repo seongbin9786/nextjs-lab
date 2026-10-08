@@ -57,8 +57,8 @@ export default function HomePage() {
         </li>
         <li>
           <code>/products/keyboard</code>의 OG 이미지:{" "}
-          <code>opengraph-image.tsx</code>가 <strong>빌드 시</strong> 이미지로
-          렌더링합니다.
+          <code>opengraph-image.tsx</code>가 <strong>첫 요청 시</strong> 이미지로
+          렌더링하고, 이후에는 캐시된 이미지를 재사용합니다.
         </li>
         <li>
           브라우저 탭의 파비콘: <code>app/icon.svg</code>.
